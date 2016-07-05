@@ -21,7 +21,7 @@ class FileSystemHeader final {
     char name[FS_NAME_SIZE + 1];
     u32 size;
     u32 checksum;
-    char *volumeName;
+    char *volumeName; // TODO: How to change this shitty leaked implementation ?
     u8 *memoryStart;
     u8 *currentMemory;
 
