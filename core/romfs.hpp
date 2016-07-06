@@ -1,3 +1,5 @@
+#include <string>
+
 #include "utils.hpp"
 
 class RomFsDisk {
@@ -5,4 +7,5 @@ class RomFsDisk {
 
   public:
     RomFsDisk(u8 *file) : fileStart(file){};
+    bool openFile(std::string fileName);
 };
