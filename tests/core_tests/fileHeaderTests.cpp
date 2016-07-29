@@ -24,10 +24,11 @@ TEST_F(filesystem_fixture, readFileHeader) {
     auto fileHeader = FileHeader(fileStart);
     fileHeader.readFile();
 
-    EXPECT_EQ(73, fileHeader.getNextFileOffset());
+    EXPECT_EQ(64, fileHeader.getNextFileOffset());
     EXPECT_EQ(32, fileHeader.getSpecInfo());
     EXPECT_EQ(0, fileHeader.getSize());
     EXPECT_EQ(3523215255, fileHeader.getChecksum());
+    EXPECT_EQ(FileType::DIRECTORY, fileHeader.getFileType());
 
     std::string name = fileHeader.getName();
 
@@ -46,6 +47,7 @@ TEST_F(filesystem_fixture, readFileHeader) {
     EXPECT_EQ(32, fileHeader.getSpecInfo());
     EXPECT_EQ(0, fileHeader.getSize());
     EXPECT_EQ(3520200576, fileHeader.getChecksum());
+    EXPECT_EQ(FileType::HARD_LINK, fileHeader.getFileType());
 
     name = fileHeader.getName();
 
@@ -60,10 +62,11 @@ TEST_F(filesystem_fixture, readFileHeader) {
     fileHeader = FileHeader(fileStart);
     fileHeader.readFile();
 
-    EXPECT_EQ(12322, fileHeader.getNextFileOffset());
+    EXPECT_EQ(12320, fileHeader.getNextFileOffset());
     EXPECT_EQ(0, fileHeader.getSpecInfo());
     EXPECT_EQ(12182, fileHeader.getSize());
     EXPECT_EQ(1989521158, fileHeader.getChecksum());
+    EXPECT_EQ(FileType::REGULAR_FILE, fileHeader.getFileType());
 
     name = fileHeader.getName();
 
@@ -78,10 +81,11 @@ TEST_F(filesystem_fixture, readFileHeader) {
     fileHeader = FileHeader(fileStart);
     fileHeader.readFile();
 
-    EXPECT_EQ(13193, fileHeader.getNextFileOffset());
+    EXPECT_EQ(13184, fileHeader.getNextFileOffset());
     EXPECT_EQ(12352, fileHeader.getSpecInfo());
     EXPECT_EQ(0, fileHeader.getSize());
     EXPECT_EQ(2526099767, fileHeader.getChecksum());
+    EXPECT_EQ(FileType::DIRECTORY, fileHeader.getFileType());
 
     name = fileHeader.getName();
 
@@ -96,10 +100,11 @@ TEST_F(filesystem_fixture, readFileHeader) {
     fileHeader = FileHeader(fileStart);
     fileHeader.readFile();
 
-    EXPECT_EQ(66537, fileHeader.getNextFileOffset());
+    EXPECT_EQ(66528, fileHeader.getNextFileOffset());
     EXPECT_EQ(13216, fileHeader.getSpecInfo());
     EXPECT_EQ(0, fileHeader.getSize());
     EXPECT_EQ(3516358403, fileHeader.getChecksum());
+    EXPECT_EQ(FileType::DIRECTORY, fileHeader.getFileType());
 
     name = fileHeader.getName();
 

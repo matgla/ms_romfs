@@ -45,6 +45,7 @@ class FileHeader final {
     bool isExist();
 
     u8 *getStartPtr();
+    u8 *getDataPtr();
 
   private:
     u32 nextFileHdr;

@@ -1,4 +1,5 @@
 #include "fileHeader.hpp"
+#include <cmath>
 #include <cstring>
 #include <iomanip>
 #include <iostream>
@@ -46,6 +47,12 @@ void FileHeader::readFile() {
     readSize();
     readChecksum();
     readName();
+
+    u32 offset = abs(currentMemory - memoryStart);
+    if (offset % 16) {
+        offset = offset - (offset % 16); // align to 16 bytes
+    }
+    dataStart = memoryStart + offset;
 }
 
 void FileHeader::setMemoryStart(u8 *memory) {
@@ -84,7 +91,6 @@ void FileHeader::readNextFileOffset() {
 }
 
 void FileHeader::readFileType() {
-    std::cout << std::to_string(fileInfo) << std::endl;
     switch (fileInfo) {
     case 0: {
         fileType = FileType::HARD_LINK;
@@ -149,4 +155,8 @@ bool FileHeader::isExist() {
 
 u8 *FileHeader::getStartPtr() {
     return memoryStart;
+}
+
+u8 *FileHeader::getDataPtr() {
+    return dataStart;
 }

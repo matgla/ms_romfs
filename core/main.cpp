@@ -19,14 +19,24 @@ std::vector<u8> readFileToMemory(std::string fileName) {
 }
 
 int main() {
-    std::vector<u8> memory;
-    memory = readFileToMemory("test_img.romfs");
-    RomFsDisk disk(memory.data());
-    auto files = disk.getAllFileNamesInDir("/inc");
-    for (const auto &fileName : files) {
-        std::cout << fileName << std::endl;
-    }
-    auto file = disk.openFile("/inc/romfs.h");
+    // std::vector<u8> memory;
+    // memory = readFileToMemory("test_img.romfs");
+    // RomFsDisk disk(memory.data());
+    // auto files = disk.getAllFileNamesInDir("/");
+    // for (const auto &fileName : files) {
+    //     std::cout << fileName << std::endl;
+    // }
+    // auto file = disk.openFile("/inc/romfs.h");
+    // u8 *data = file.fileHdr.getDataPtr();
+    // for (int i = 0; i < 30; i++) {
+    //     std::cout << data[i];
+    // }
+    FileBuf ob;
+    std::istream in(&ob);
+
+    int i;
+    ob >> i;
+    std::cout << i << std::endl;
 
     return 0;
 }

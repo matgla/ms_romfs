@@ -11,26 +11,29 @@ File RomFsDisk::openFile(const std::string &filePath) {
     File file;
     auto files = getFilesArray(filePath);
     for (int i = 0; i < files.size(); i++) {
-        std::cout << "szukam: " << files[i] << std::endl;
         auto fileHeader = findFileHeaderIntoDir(directoryStart, files[i]);
         if (!fileHeader.isExist()) {
-            std::cout << "file not exist" << std::endl;
             return file;
         }
         if (fileHeader.getFileType() != FileType::DIRECTORY &&
             i != files.size() - 1) {
-            std::cout << "is not a dir" << std::endl;
             return file;
         }
         if (i != files.size() - 1)
             directoryStart = fileStart + fileHeader.getSpecInfo();
         else {
+            if (fileHeader.getFileType() != FileType::REGULAR_FILE) {
+                return file;
+            }
             directoryStart = fileHeader.getStartPtr();
         }
     }
     FileHeader fHdr(directoryStart);
     fHdr.readFile();
-    std::cout << "znalazlem plik: " << fHdr.getName() << std::endl;
+
+    file.fileHdr.setMemoryStart(directoryStart);
+    file.fileHdr.readFile();
+    file.open = true;
     return file;
 }
 
@@ -59,7 +62,6 @@ RomFsDisk::getAllFileNamesInDir(const std::string &directoryPath) {
         FileHeader fHdr(filePtr);
         fHdr.readFile();
         std::string name = fHdr.getName();
-        name += " " + fHdr.getFileTypeString();
         filesList.push_back(name);
         auto offset = fHdr.getAlignedNextFileOffset();
         if (0 == offset) {
@@ -88,23 +90,4 @@ FileHeader RomFsDisk::findFileHeaderIntoDir(u8 *directoryStart,
         }
     }
     return FileHeader(nullptr);
-}
-
-bool RomFsDisk::getFileOffsetToFirstFileIntoDir(u32 directoryFirstFileOffset,
-                                                const std::string &dirName) {
-    /*    auto filePtr = fileStart + directoryFirstFileOffset;
-        while (filePtr != nullptr) {
-            FileHeader fHdr(filePtr);
-            fHdr.readFile();
-            std::string name = fHdr.getName();
-            name += " " + fHdr.getFileTypeString();
-            filesList.push_back(name);
-            auto offset = fHdr.getAlignedNextFileOffset();
-            if (0 == offset) {
-                filePtr = nullptr;
-            } else {
-                filePtr = fileStart + offset;
-            }
-        }
-        return filesList;*/
 }
