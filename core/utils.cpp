@@ -27,3 +27,27 @@ u32 readString(char **str, u8 **fp) {
 
     return size;
 }
+
+std::vector<std::string> getFilesArray(std::string filePath) {
+    std::vector<std::string> files;
+    if (0 == filePath.length()) {
+        return files;
+    }
+    int prevSlashPosition = 1, nextSlashPosition = 1;
+    while ((nextSlashPosition = filePath.find("/", prevSlashPosition)) !=
+           std::string::npos) {
+        auto fileName = filePath.substr(prevSlashPosition,
+                                        nextSlashPosition - prevSlashPosition);
+        if (0 != fileName.length()) {
+            files.push_back(fileName);
+        }
+
+        prevSlashPosition = ++nextSlashPosition;
+    }
+    auto fileName = filePath.substr(prevSlashPosition,
+                                    nextSlashPosition - prevSlashPosition);
+    if (0 != fileName.length()) {
+        files.push_back(fileName);
+    }
+    return files;
+}
