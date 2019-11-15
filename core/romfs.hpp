@@ -1,20 +1,21 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <vector>
+#include <string_view>
 
 #include "file.hpp"
 #include "fileHeader.hpp"
 #include "fileSystemHeader.hpp"
 #include "utils.hpp"
 
-class RomFsDisk {
-    u8 *fileStart;
-    u8 *firstFileHeader;
+class RomFsDisk
+{
+public:
+    RomFsDisk(uint8_t* memory);
+    File openFile(const std::string_view& fileName);
 
-  public:
-    RomFsDisk(u8 *file);
-    File openFile(const std::string &fileName);
     FileSystemHeader fileSystemHeader;
     std::vector<std::string>
     getAllFileNamesInDir(const std::string &directoryPath);
@@ -24,4 +25,7 @@ class RomFsDisk {
   private:
     bool getFileOffsetToFirstFileIntoDir(u32 directoryFirstFileOffset,
                                          const std::string &dirName);
+
+    uint8_t* memory_start_;
+    uint8_t* firstFileHeader;
 };

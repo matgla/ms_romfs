@@ -5,15 +5,16 @@
 #include <istream>
 #include <streambuf>
 
-class File final {
-  public:
+class File final
+{
+public:
     File() : fileHdr(nullptr), open(false) {
     }
     bool isOpen();
     FileHeader fileHdr;
     bool open;
 
-  private:
+private:
 };
 
 class FileBuf final : public std::streambuf {

@@ -1,36 +1,32 @@
 #pragma once
 
-#include "utils.hpp"
 #include <memory>
+#include <string_view>
+#include <cstring>
 
-#define FS_NAME_SIZE 8
+#include "utils.hpp"
+#include "reader.hpp"
 
-class FileSystemHeader final {
-  public:
-    FileSystemHeader() = delete;
-    FileSystemHeader(u8 *memory);
+class FileSystemHeader final
+{
+public:
+    FileSystemHeader(uint8_t* memory);
 
-    void readInfo();
-    void setMemoryStart(u8 *memory);
+    void setMemoryStart(uint8_t* memory);
 
-    char *getName();
-    u32 getSize();
-    u32 getChecksum();
-    char *getVolumeName();
-
-    u8 *getHeaderEnd();
+    uint32_t getSize();
+    uint32_t getChecksum();
+    const char* getVolumeName();
+    const uint8_t* getHeaderEnd();
 
   private:
-    char name[FS_NAME_SIZE + 1];
-    u32 size;
-    u32 checksum;
-    std::unique_ptr<char[]> volumeName;
-    u8 *memoryStart;
-    u8 *currentMemory;
-    u8 *endHeader;
+    uint32_t fs_size_;
+    uint32_t fs_checksum_;
 
-    void readName();
-    void readSize();
-    void readChecksum();
-    void readVolumeName();
+    bool validate_start_cookie();
+    std::string_view volume_name_;
+
+    Reader reader_;
+    const uint8_t* memory_start_;
+    uint8_t* header_end_;
 };

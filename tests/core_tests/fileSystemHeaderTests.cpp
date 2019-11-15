@@ -15,12 +15,7 @@ class filesystem_fixture : public ::testing::Test {
 };
 
 TEST_F(filesystem_fixture, readFileSystemHeader) {
-    auto fileSystemInfo = FileSystemHeader(nullptr);
-    fileSystemInfo.setMemoryStart(disk.data());
-    fileSystemInfo.readInfo();
-
-    std::string fileSystemName = fileSystemInfo.getName();
-    EXPECT_EQ("-rom1fs-", fileSystemName);
+    auto fileSystemInfo = FileSystemHeader(disk.data());
 
     u32 expectedFileSytemSize = 376752;
     EXPECT_EQ(expectedFileSytemSize, fileSystemInfo.getSize());

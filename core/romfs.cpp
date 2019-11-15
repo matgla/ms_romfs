@@ -1,15 +1,17 @@
 #include "romfs.hpp"
 #include <iostream>
 
-RomFsDisk::RomFsDisk(u8 *file) : fileStart(file), fileSystemHeader(file) {
-    fileSystemHeader.readInfo();
-    firstFileHeader = fileSystemHeader.getHeaderEnd();
+RomFsDisk::RomFsDisk(uint8_t* memory)
+    : memory_start_(memory)
+    , fileSystemHeader(memory)
+{
+    firstFileHeader = const_cast<uint8_t*>(fileSystemHeader.getHeaderEnd());
 }
 
-File RomFsDisk::openFile(const std::string &filePath) {
+File RomFsDisk::openFile(const std::string_view& filePath) {
     auto directoryStart = firstFileHeader;
     File file;
-    auto files = getFilesArray(filePath);
+    auto files = getFilesArray(std::string(filePath));
     for (int i = 0; i < files.size(); i++) {
         auto fileHeader = findFileHeaderIntoDir(directoryStart, files[i]);
         if (!fileHeader.isExist()) {
@@ -20,7 +22,7 @@ File RomFsDisk::openFile(const std::string &filePath) {
             return file;
         }
         if (i != files.size() - 1)
-            directoryStart = fileStart + fileHeader.getSpecInfo();
+            directoryStart = memory_start_ + fileHeader.getSpecInfo();
         else {
             if (fileHeader.getFileType() != FileType::REGULAR_FILE) {
                 return file;
@@ -53,7 +55,7 @@ RomFsDisk::getAllFileNamesInDir(const std::string &directoryPath) {
         if (fileHeader.getFileType() != FileType::DIRECTORY) {
             return filesList;
         }
-        directoryStart = fileStart + fileHeader.getSpecInfo();
+        directoryStart = memory_start_ + fileHeader.getSpecInfo();
     }
     FileHeader fHdr(directoryStart);
 
@@ -67,7 +69,7 @@ RomFsDisk::getAllFileNamesInDir(const std::string &directoryPath) {
         if (0 == offset) {
             filePtr = nullptr;
         } else {
-            filePtr = fileStart + offset;
+            filePtr = memory_start_ + offset;
         }
     }
     return filesList;
@@ -86,7 +88,7 @@ FileHeader RomFsDisk::findFileHeaderIntoDir(u8 *directoryStart,
         if (0 == offset) {
             filePtr = nullptr;
         } else {
-            filePtr = fileStart + offset;
+            filePtr = memory_start_ + offset;
         }
     }
     return FileHeader(nullptr);

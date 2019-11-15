@@ -1,65 +1,42 @@
 #include "fileSystemHeader.hpp"
+
+#include <cassert>
 #include <cstring>
 
-FileSystemHeader::FileSystemHeader(u8 *memory)
-    : memoryStart(makeAlignedPtr(memory, 16)),
-      currentMemory(makeAlignedPtr(memory, 16)), size(0), checksum(0),
-      volumeName(nullptr), endHeader(nullptr) {
+FileSystemHeader::FileSystemHeader(uint8_t* memory)
+    : fs_size_(0)
+    , fs_checksum_(0)
+    , volume_name_("")
+    , reader_(makeAlignedPtr(memory, 16))
+{
+    assert(validate_start_cookie());
+
+    fs_size_ = reader_.read<uint32_t>();
+    fs_checksum_ = reader_.read<uint32_t>();
+    volume_name_ = reader_.read_string_with_padding(16);
 }
 
-void FileSystemHeader::readInfo() {
-    readName();
-    readSize();
-    readChecksum();
-    readVolumeName();
-    endHeader = currentMemory;
+bool FileSystemHeader::validate_start_cookie()
+{
+    const std::string_view cookie = reader_.read_string(8);
+    return cookie == "-rom1fs-";
 }
 
-void FileSystemHeader::readName() {
-    memcpy(name, currentMemory, FS_NAME_SIZE);
-    name[FS_NAME_SIZE] = 0;
-    currentMemory += FS_NAME_SIZE;
+uint32_t FileSystemHeader::getSize()
+{
+    return fs_size_;
 }
 
-void FileSystemHeader::readSize() {
-    size = read32(&currentMemory);
+uint32_t FileSystemHeader::getChecksum()
+{
+    return fs_checksum_;
 }
 
-void FileSystemHeader::readChecksum() {
-    checksum = read32(&currentMemory);
+const char* FileSystemHeader::getVolumeName()
+{
+    return volume_name_.data();
 }
 
-void FileSystemHeader::readVolumeName() {
-    u32 size = 0;
-    size = strlen((char *)(currentMemory));
-
-    volumeName.reset(new char[size]);
-    char *volumeNamePtr = volumeName.get();
-
-    readString(&volumeNamePtr, &currentMemory);
-}
-
-char *FileSystemHeader::getName() {
-    return name;
-}
-
-u32 FileSystemHeader::getSize() {
-    return size;
-}
-
-u32 FileSystemHeader::getChecksum() {
-    return checksum;
-}
-
-char *FileSystemHeader::getVolumeName() {
-    return volumeName.get();
-}
-
-u8 *FileSystemHeader::getHeaderEnd() {
-    return endHeader;
-}
-
-void FileSystemHeader::setMemoryStart(u8 *memory) {
-    memoryStart = makeAlignedPtr(memory, 16);
-    currentMemory = makeAlignedPtr(memory, 16);
+const uint8_t* FileSystemHeader::getHeaderEnd() {
+    return reader_.address();
 }

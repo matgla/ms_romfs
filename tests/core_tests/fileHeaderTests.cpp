@@ -16,11 +16,9 @@ class filesystem_fixture : public ::testing::Test {
 };
 
 TEST_F(filesystem_fixture, readFileHeader) {
-    auto fileSystemInfo = FileSystemHeader(nullptr);
-    fileSystemInfo.setMemoryStart(disk.data());
-    fileSystemInfo.readInfo();
+    auto fileSystemInfo = FileSystemHeader(disk.data());
 
-    auto fileStart = fileSystemInfo.getHeaderEnd();
+    auto fileStart = const_cast<uint8_t*>(fileSystemInfo.getHeaderEnd());
     auto fileHeader = FileHeader(fileStart);
     fileHeader.readFile();
 
