@@ -19,36 +19,36 @@ class romfs_fixture : public ::testing::Test {
     };
 };
 
-TEST_F(romfs_fixture, shouldOpenFileInRoot) {
-    auto file = disk->openFile("/.gitignore");
-    EXPECT_EQ(true, file.open);
+// TEST_F(romfs_fixture, shouldOpenFileInRoot) {
+//     auto file = disk->openFile("/.gitignore");
+//     EXPECT_EQ(true, file.open);
 
-    std::string name = file.fileHdr.getName();
-    EXPECT_EQ(".gitignore", name);
-}
+//     std::string name = file.fileHdr.get_name();
+//     EXPECT_EQ(".gitignore", name);
+// }
 
-TEST_F(romfs_fixture, shouldOpenFileInDirectory) {
-    auto file = disk->openFile("/inc/romfs.h");
-    EXPECT_EQ(true, file.open);
+// TEST_F(romfs_fixture, shouldOpenFileInDirectory) {
+//     auto file = disk->openFile("/inc/romfs.h");
+//     EXPECT_EQ(true, file.open);
 
-    std::string name = file.fileHdr.getName();
-    EXPECT_EQ("romfs.h", name);
-}
+//     std::string name = file.fileHdr.get_name();
+//     EXPECT_EQ("romfs.h", name);
+// }
 
-TEST_F(romfs_fixture, shouldNotOpenDirectoryInRoot) {
-    auto file = disk->openFile("/inc");
-    EXPECT_EQ(false, file.open);
-}
+// TEST_F(romfs_fixture, shouldNotOpenDirectoryInRoot) {
+//     auto file = disk->openFile("/inc");
+//     EXPECT_EQ(false, file.open);
+// }
 
-TEST_F(romfs_fixture, shouldNotOpenDirectoryInDir) {
-    auto file = disk->openFile("/CMakeFiles/msos_romfs.dir");
-    EXPECT_EQ(false, file.open);
-}
+// TEST_F(romfs_fixture, shouldNotOpenDirectoryInDir) {
+//     auto file = disk->openFile("/CMakeFiles/msos_romfs.dir");
+//     EXPECT_EQ(false, file.open);
+// }
 
-TEST_F(romfs_fixture, shouldNotOpenNotExistingFile) {
-    auto file = disk->openFile("/notexist.txt12");
-    EXPECT_EQ(false, file.open);
-}
+// TEST_F(romfs_fixture, shouldNotOpenNotExistingFile) {
+//     auto file = disk->openFile("/notexist.txt12");
+//     EXPECT_EQ(false, file.open);
+// }
 
 TEST_F(romfs_fixture, shouldReturnFileListInRoot) {
     // auto files = disk->getAllFileNamesInDir("/");

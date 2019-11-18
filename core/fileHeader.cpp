@@ -1,162 +1,88 @@
 #include "fileHeader.hpp"
-#include <cmath>
-#include <cstring>
-#include <iomanip>
-#include <iostream>
-#include <stdexcept>
 
-std::string FileHeader::getFileTypeString() {
-    switch (fileType) {
-    case FileType::BLOCK_DEVICE: {
-        return "b";
-    } break;
-    case FileType::CHAR_DEVICE: {
-        return "c";
-    } break;
-    case FileType::DIRECTORY: {
-        return "d";
-    } break;
-    case FileType::FIFO: {
-        return "fi";
-    } break;
-    case FileType::HARD_LINK: {
-        return "h";
-    } break;
-    case FileType::REGULAR_FILE: {
-        return "f";
-    } break;
-    case FileType::SOCKET: {
-        return "s";
-    } break;
-    case FileType::SYMBOLIC_LINK: {
-        return "l";
-    } break;
+std::string_view to_string(const FileType filetype)
+{
+    switch (filetype)
+    {
+        case FileType::BLOCK_DEVICE: return "b";
+        case FileType::CHAR_DEVICE: return "c";
+        case FileType::DIRECTORY: return "d";
+        case FileType::FIFO: return "fi";
+        case FileType::HARD_LINK: return "h";
+        case FileType::REGULAR_FILE: return "f";
+        case FileType::SOCKET: return "s";
+        case FileType::SYMBOLIC_LINK: return "l";
     }
+    return "u";
 }
 
-FileHeader::FileHeader(u8 *memory)
-    : nextFileHdr(0), specInfo(0), size(0), checksum(0), name(nullptr),
-      memoryStart(memory), currentMemory(memory), dataStart(nullptr),
-      fileType(FileType::NOT_EXIST) {
+FileHeader::FileHeader(const uint8_t* memory)
+    : memory_start_(memory)
+    , reader_(memory)
+    , next_file_header_(0)
+    , spec_info_(0)
+    , file_size_(0)
+    , data_start_(nullptr)
+    , filetype_(FileType::NOT_EXIST)
+{
+    read_next_file_offset();
+    spec_info_ = reader_.read<uint32_t>();
+    file_size_ = reader_.read<uint32_t>();
+    checksum_ = reader_.read<uint32_t>();
+    name_ = reader_.read_string_with_padding(4);
+
+    data_start_ = memory_start_ + align(reader_.get_readed_bytes(), 16);
 }
 
-void FileHeader::readFile() {
-    readNextFileOffset();
-    readFileType();
-    readSpecInfo();
-    readSize();
-    readChecksum();
-    readName();
-
-    u32 offset = abs(currentMemory - memoryStart);
-    if (offset % 16) {
-        offset = offset - (offset % 16); // align to 16 bytes
-    }
-    dataStart = memoryStart + offset;
+uint32_t FileHeader::get_next_file_offset() const
+{
+    return next_file_header_;
 }
 
-void FileHeader::setMemoryStart(u8 *memory) {
-    memoryStart = memory;
-    currentMemory = memory;
+uint32_t FileHeader::get_specinfo() const
+{
+    return spec_info_;
 }
 
-u32 FileHeader::getNextFileOffset() {
-    return nextFileHdr;
+uint32_t FileHeader::get_size() const
+{
+    return file_size_;
 }
 
-u32 FileHeader::getAlignedNextFileOffset() {
-    return nextFileHdr;
+uint32_t FileHeader::get_checksum() const
+{
+    return checksum_;
 }
 
-u32 FileHeader::getSpecInfo() {
-    return specInfo;
+std::string_view FileHeader::get_name() const
+{
+    return name_;
 }
 
-u32 FileHeader::getSize() {
-    return size;
+void FileHeader::read_next_file_offset()
+{
+    uint32_t next_file = reader_.read<uint32_t>();
+    constexpr uint32_t next_file_header_mask = 0xfffffff0;
+    constexpr uint32_t file_info_mask = 0x00000007;
+    next_file_header_ = next_file & next_file_header_mask;
+    uint8_t file_info = next_file & file_info_mask;
+    filetype_ = static_cast<FileType>(file_info);
 }
 
-u32 FileHeader::getChecksum() {
-    return checksum;
+FileType FileHeader::get_file_type() const
+{
+    return filetype_;
 }
 
-char *FileHeader::getName() const {
-    return name.get();
+bool FileHeader::exists() const
+{
+    return filetype_ != FileType::NOT_EXIST;
 }
 
-void FileHeader::readNextFileOffset() {
-    u32 data = read32(&currentMemory);
-    nextFileHdr = data & 0xfffffff0;
-    fileInfo = data & 0x00000007;
+u8 *FileHeader::get_start_ptr() {
+    return const_cast<uint8_t*>(memory_start_);
 }
 
-void FileHeader::readFileType() {
-    switch (fileInfo) {
-    case 0: {
-        fileType = FileType::HARD_LINK;
-    } break;
-    case 1: {
-        fileType = FileType::DIRECTORY;
-    } break;
-    case 2: {
-        fileType = FileType::REGULAR_FILE;
-    } break;
-    case 3: {
-        fileType = FileType::SYMBOLIC_LINK;
-    } break;
-    case 4: {
-        fileType = FileType::BLOCK_DEVICE;
-    } break;
-    case 5: {
-        fileType = FileType::CHAR_DEVICE;
-    } break;
-    case 6: {
-        fileType = FileType::SOCKET;
-    } break;
-    case 7: {
-        fileType = FileType::FIFO;
-    } break;
-    default: { fileType = FileType::NOT_EXIST; }
-    }
-}
-
-void FileHeader::readSpecInfo() {
-    specInfo = read32(&currentMemory);
-}
-
-void FileHeader::readSize() {
-    size = read32(&currentMemory);
-}
-
-void FileHeader::readChecksum() {
-    checksum = read32(&currentMemory);
-}
-
-void FileHeader::readName() {
-    u32 size = 0;
-    size = strlen((char *)(currentMemory));
-
-    name.reset(new char[size]);
-    char *volumeNamePtr = name.get();
-
-    readString(&volumeNamePtr, &currentMemory);
-}
-
-FileType FileHeader::getFileType() {
-    return fileType;
-}
-
-bool FileHeader::isExist() {
-    if (fileType == FileType::NOT_EXIST) {
-        return false;
-    }
-    return true;
-}
-
-u8 *FileHeader::getStartPtr() {
-    return memoryStart;
-}
-
-u8 *FileHeader::getDataPtr() {
-    return dataStart;
+uint8_t* FileHeader::get_data_ptr() {
+    return const_cast<uint8_t*>(data_start_);
 }

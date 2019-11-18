@@ -18,11 +18,14 @@ TEST_F(filesystem_fixture, readFileSystemHeader) {
     auto fileSystemInfo = FileSystemHeader(disk.data());
 
     u32 expectedFileSytemSize = 376752;
-    EXPECT_EQ(expectedFileSytemSize, fileSystemInfo.getSize());
+    EXPECT_EQ(expectedFileSytemSize, fileSystemInfo.get_volume_size());
+
+    uint32_t expectedFileSystemHeaderSize = 32;
+    EXPECT_EQ(expectedFileSystemHeaderSize, fileSystemInfo.get_header_size());
 
     u32 expectedChecksum = 3579543322;
-    EXPECT_EQ(expectedChecksum, fileSystemInfo.getChecksum());
+    EXPECT_EQ(expectedChecksum, fileSystemInfo.get_checksum());
 
-    std::string volumeName = fileSystemInfo.getVolumeName();
+    std::string volumeName(fileSystemInfo.get_volume_name());
     EXPECT_EQ("JADYMY", volumeName);
 }

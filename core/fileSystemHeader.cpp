@@ -7,7 +7,7 @@ FileSystemHeader::FileSystemHeader(uint8_t* memory)
     : fs_size_(0)
     , fs_checksum_(0)
     , volume_name_("")
-    , reader_(makeAlignedPtr(memory, 16))
+    , reader_(make_aligned_ptr<uint8_t>(memory, 16))
 {
     assert(validate_start_cookie());
 
@@ -22,21 +22,22 @@ bool FileSystemHeader::validate_start_cookie()
     return cookie == "-rom1fs-";
 }
 
-uint32_t FileSystemHeader::getSize()
+uint32_t FileSystemHeader::get_volume_size() const
 {
     return fs_size_;
 }
 
-uint32_t FileSystemHeader::getChecksum()
+uint32_t FileSystemHeader::get_checksum() const
 {
     return fs_checksum_;
 }
 
-const char* FileSystemHeader::getVolumeName()
+std::string_view FileSystemHeader::get_volume_name() const
 {
-    return volume_name_.data();
+    return volume_name_;
 }
 
-const uint8_t* FileSystemHeader::getHeaderEnd() {
-    return reader_.address();
+std::size_t FileSystemHeader::get_header_size() const
+{
+    return reader_.get_readed_bytes();
 }

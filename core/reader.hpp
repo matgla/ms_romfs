@@ -12,22 +12,23 @@ constexpr auto align(const T value, const uint32_t alignment)
 class Reader
 {
 public:
-    Reader(uint8_t const* address)
+    Reader(const uint8_t* address)
         : address_(address)
+        , readed_bytes_(0)
     {
     }
 
     std::string_view read_string(const std::size_t size)
     {
-        std::string_view str(reinterpret_cast<const char*>(address_), size);
-        address_ += size;
+        std::string_view str(reinterpret_cast<const char*>(address_ + readed_bytes_), size);
+        readed_bytes_ += size;
         return str;
     }
 
     std::string_view read_string_with_padding(const std::size_t padding)
     {
-        std::string_view str(reinterpret_cast<const char*>(address_));
-        address_ += align(str.size(), padding);
+        std::string_view str(reinterpret_cast<const char*>(address_ + readed_bytes_));
+        readed_bytes_ += align(str.size(), padding);
         return str;
     }
 
@@ -38,29 +39,35 @@ public:
         uint8_t* ptr = reinterpret_cast<uint8_t*>(&data);
         for (int i = 0; i < sizeof(T); ++i)
         {
-            ptr[sizeof(T) - i - 1] = address_[i];
+            ptr[sizeof(T) - i - 1] = address_[readed_bytes_ + i];
         }
-        address_ += sizeof(T);
+        readed_bytes_ += sizeof(T);
         return data;
     }
 
     void skip(uint32_t bytes)
     {
-        address_ += bytes;
+        readed_bytes_ += bytes;
     }
 
     template <typename T>
     void skip()
     {
-        address_ += sizeof(T);
+        readed_bytes_ += sizeof(T);
     }
 
-    uint8_t const* address() const
+    const uint8_t* address() const
     {
-        return address_;
+        return address_ + readed_bytes_;
+    }
+
+    const std::size_t get_readed_bytes() const
+    {
+        return readed_bytes_;
     }
 
 private:
 
-    uint8_t const* address_;
+    const uint8_t* address_;
+    std::size_t readed_bytes_;
 };

@@ -1,62 +1,55 @@
 #pragma once
+
 #include <memory>
-#include <string>
+#include <string_view>
 
 #include "utils.hpp"
+#include "reader.hpp"
 
-enum class FileType {
-    HARD_LINK,
-    DIRECTORY,
-    REGULAR_FILE,
-    SYMBOLIC_LINK,
-    BLOCK_DEVICE,
-    CHAR_DEVICE,
-    SOCKET,
-    FIFO,
+enum class FileType : uint8_t
+{
+    HARD_LINK = 0,
+    DIRECTORY = 1,
+    REGULAR_FILE = 2,
+    SYMBOLIC_LINK = 3,
+    BLOCK_DEVICE = 4,
+    CHAR_DEVICE = 5,
+    SOCKET = 6,
+    FIFO = 7,
     NOT_EXIST
 };
 
-std::string getFileTypeString(const FileType &fileType);
+std::string_view to_string(const FileType fileType);
 
 class FileHeader final {
   public:
-    FileHeader() = delete;
-    FileHeader(u8 *memory);
+    FileHeader(const uint8_t* memory);
 
-    void readFile();
-    void setMemoryStart(u8 *memory);
+    uint32_t get_next_file_offset() const;
+    uint32_t get_specinfo() const;
+    uint32_t get_size() const;
+    uint32_t get_checksum() const;
+    std::string_view get_name() const;
 
-    u32 getNextFileOffset();
-    u32 getAlignedNextFileOffset();
-    u32 getSpecInfo();
-    u32 getSize();
-    u32 getChecksum();
-    char *getName() const;
+    FileType get_file_type() const;
+    bool exists() const;
 
-    void readNextFileOffset();
-    void readFileType();
-    void readSpecInfo();
-    void readSize();
-    void readChecksum();
-    void readName();
+    // REMOVE
+    u8 *get_start_ptr();
+    u8 *get_data_ptr();
 
-    FileType getFileType();
-    std::string getFileTypeString();
-    bool isExist();
+private:
+    void read_next_file_offset();
 
-    u8 *getStartPtr();
-    u8 *getDataPtr();
+    const uint8_t* memory_start_;
+    const uint8_t* data_start_;
+    Reader reader_;
 
-  private:
-    u32 nextFileHdr;
-    u32 specInfo;
-    u32 size;
-    u32 checksum;
-    u8 fileInfo;
-    std::unique_ptr<char[]> name;
-    u8 *memoryStart;
-    u8 *currentMemory;
-    u8 *dataStart;
+    uint32_t next_file_header_;
+    uint32_t spec_info_;
+    uint32_t file_size_;
+    uint32_t checksum_;
+    std::string_view name_;
 
-    FileType fileType;
+    FileType filetype_;
 };

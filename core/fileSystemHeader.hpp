@@ -12,14 +12,12 @@ class FileSystemHeader final
 public:
     FileSystemHeader(uint8_t* memory);
 
-    void setMemoryStart(uint8_t* memory);
+    uint32_t get_checksum() const;
+    std::string_view get_volume_name() const;
+    std::size_t get_header_size() const;
+    uint32_t get_volume_size() const;
 
-    uint32_t getSize();
-    uint32_t getChecksum();
-    const char* getVolumeName();
-    const uint8_t* getHeaderEnd();
-
-  private:
+private:
     uint32_t fs_size_;
     uint32_t fs_checksum_;
 
