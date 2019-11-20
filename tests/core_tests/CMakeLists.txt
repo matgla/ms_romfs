@@ -8,6 +8,7 @@ file(GLOB_RECURSE PROD_SRCS
 )
 
 file(COPY "${PROJECT_SOURCE_DIR}/tests/core_tests/test_img.romfs" DESTINATION ${PROJECT_BINARY_DIR})
+file(COPY "${PROJECT_SOURCE_DIR}/tests/example_volume.romfs" DESTINATION ${PROJECT_BINARY_DIR})
 
 include_directories("${PROJECT_SOURCE_DIR}/core")
 

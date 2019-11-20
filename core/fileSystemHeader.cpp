@@ -3,7 +3,7 @@
 #include <cassert>
 #include <cstring>
 
-FileSystemHeader::FileSystemHeader(uint8_t* memory)
+FileSystemHeader::FileSystemHeader(const uint8_t* memory)
     : fs_size_(0)
     , fs_checksum_(0)
     , volume_name_("")

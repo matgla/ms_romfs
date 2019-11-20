@@ -10,7 +10,7 @@
 class FileSystemHeader final
 {
 public:
-    FileSystemHeader(uint8_t* memory);
+    FileSystemHeader(const uint8_t* memory);
 
     uint32_t get_checksum() const;
     std::string_view get_volume_name() const;
@@ -26,5 +26,4 @@ private:
 
     Reader reader_;
     const uint8_t* memory_start_;
-    uint8_t* header_end_;
 };

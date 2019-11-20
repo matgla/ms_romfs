@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <iomanip>
 
 std::vector<u8> readFileToMemory(std::string fileName) {
     std::ifstream file(fileName, std::ios::binary | std::ios::ate);
@@ -20,28 +21,29 @@ std::vector<u8> readFileToMemory(std::string fileName) {
 
 int main() {
     std::vector<u8> memory;
-    memory = readFileToMemory("test_img.romfs");
+    memory = readFileToMemory("example_volume.romfs");
     RomFsDisk disk(memory.data());
-    // auto fs_hdr = disk.fileSystemHeader;
-    // std::cerr << "Disk name: " << fs_hdr.get_volume_name() << std::endl;
-    // std::cerr << "Disk size: " << fs_hdr.get_volume_size() << std::endl;
-    // std::cerr << "Disk checksum: " << fs_hdr.get_checksum() << std::endl;
-    auto files = disk.getAllFileNamesInDir("/");
-    for (const auto& fileName : files) {
-        std::cout << fileName << std::endl;
-    }
-    std::cerr << "Some data: " << std::endl;
-    // auto file = disk.openFile("/inc/romfs.h");
-    // u8 *data = file.fileHdr.get_data_ptr();
-    // for (int i = 0; i < 30; i++) {
-    //     std::cout << data[i];
-    // }
-    // FileBuf ob;
-    // std::istream in(&ob);
 
-    // int i;
-    // ob >> i;
-    // std::cout << i << std::endl;
+    std::cerr << "ls /" << std::endl;
+
+    std::string command = "";
+    while (command != "q")
+    {
+        std::cin >> command;
+
+        auto directory = disk.get_directory(command);
+        if (!directory)
+        {
+            std::cout << "Path not exists: " << command << std::endl;
+            continue;
+        }
+
+        for (const auto& file : *directory)
+        {
+            std::cout << std::right << std::setw(8) << std::dec << file.get_size() << " " << to_string(file.get_file_type()) << " 0x" << std::hex << file.get_specinfo() << " " << file.get_name() << std::endl;
+        }
+    }
+
 
     return 0;
 }

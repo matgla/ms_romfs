@@ -9,7 +9,7 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 
 template <typename T>
-T* make_aligned_ptr(T* memoryAddress, std::size_t alignment)
+T* make_aligned_ptr(const T* memoryAddress, std::size_t alignment)
 {
     uintptr_t addr = reinterpret_cast<uintptr_t>(memoryAddress);
     if (addr % alignment != 0)

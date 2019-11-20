@@ -1,5 +1,7 @@
 #include "fileHeader.hpp"
 
+#include <iostream>
+
 std::string_view to_string(const FileType filetype)
 {
     switch (filetype)
@@ -29,9 +31,9 @@ FileHeader::FileHeader(const uint8_t* memory)
     spec_info_ = reader_.read<uint32_t>();
     file_size_ = reader_.read<uint32_t>();
     checksum_ = reader_.read<uint32_t>();
-    name_ = reader_.read_string_with_padding(4);
+    name_ = reader_.read_string_with_padding(16);
 
-    data_start_ = memory_start_ + align(reader_.get_readed_bytes(), 16);
+    data_start_ = memory_start_ + reader_.get_readed_bytes();
 }
 
 uint32_t FileHeader::get_next_file_offset() const
