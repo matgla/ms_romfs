@@ -1,10 +1,12 @@
 #pragma once
 
-#include <memory>
 #include <string_view>
 
-#include "utils.hpp"
-#include "reader.hpp"
+#include "romfs/utils.hpp"
+#include "romfs/reader.hpp"
+
+namespace romfs
+{
 
 enum class FileType : uint8_t
 {
@@ -21,7 +23,8 @@ enum class FileType : uint8_t
 
 std::string_view to_string(const FileType fileType);
 
-class FileHeader final {
+class FileHeader final
+{
   public:
     FileHeader(const uint8_t* memory);
 
@@ -33,10 +36,7 @@ class FileHeader final {
 
     FileType get_file_type() const;
     bool exists() const;
-
-    // REMOVE
-    u8 *get_start_ptr();
-    u8 *get_data_ptr();
+    const uint8_t* data() const;
 
 private:
     void read_next_file_offset();
@@ -53,3 +53,5 @@ private:
 
     FileType filetype_;
 };
+
+} // namespace romfs

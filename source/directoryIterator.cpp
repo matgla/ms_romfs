@@ -1,4 +1,7 @@
-#include "directoryIterator.hpp"
+#include "romfs/directoryIterator.hpp"
+
+namespace romfs
+{
 
 DirectoryIterator::DirectoryIterator(const uint8_t* address, std::size_t offset)
     : address_(address)
@@ -25,3 +28,5 @@ const FileHeader DirectoryIterator::operator*() const
     FileHeader header(address_ + offset_);
     return header;
 }
+
+} // namespace romfs

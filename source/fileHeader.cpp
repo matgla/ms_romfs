@@ -1,6 +1,7 @@
-#include "fileHeader.hpp"
+#include "romfs/fileHeader.hpp"
 
-#include <iostream>
+namespace romfs
+{
 
 std::string_view to_string(const FileType filetype)
 {
@@ -81,10 +82,9 @@ bool FileHeader::exists() const
     return filetype_ != FileType::NOT_EXIST;
 }
 
-u8 *FileHeader::get_start_ptr() {
-    return const_cast<uint8_t*>(memory_start_);
+const uint8_t* FileHeader::data() const
+{
+    return data_start_;
 }
 
-uint8_t* FileHeader::get_data_ptr() {
-    return const_cast<uint8_t*>(data_start_);
-}
+} // namespace romfs

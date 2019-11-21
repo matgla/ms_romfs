@@ -1,7 +1,10 @@
-#include "fileSystemHeader.hpp"
+#include "romfs/fileSystemHeader.hpp"
 
 #include <cassert>
 #include <cstring>
+
+namespace romfs
+{
 
 FileSystemHeader::FileSystemHeader(const uint8_t* memory)
     : fs_size_(0)
@@ -41,3 +44,5 @@ std::size_t FileSystemHeader::get_header_size() const
 {
     return reader_.get_readed_bytes();
 }
+
+} // namespace romfs

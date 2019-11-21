@@ -4,7 +4,11 @@
 #include <string_view>
 #include <optional>
 
-#include "directoryIterator.hpp"
+#include "romfs/directoryIterator.hpp"
+#include "romfs/file.hpp"
+
+namespace romfs
+{
 
 class Directory
 {
@@ -17,7 +21,13 @@ public:
 
     DirectoryIterator begin() const;
     DirectoryIterator end() const;
+
+    std::optional<File> get_file(const std::string_view& name) const;
 private:
     const uint8_t* address_;
     std::size_t offset_;
 };
+
+} // namespace romfs
+
+

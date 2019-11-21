@@ -1,11 +1,13 @@
 #pragma once
 
-#include <memory>
+#include <cstdint>
 #include <string_view>
-#include <cstring>
 
-#include "utils.hpp"
-#include "reader.hpp"
+#include "romfs/utils.hpp"
+#include "romfs/reader.hpp"
+
+namespace romfs
+{
 
 class FileSystemHeader final
 {
@@ -27,3 +29,7 @@ private:
     Reader reader_;
     const uint8_t* memory_start_;
 };
+
+} // namespace romfs
+
+

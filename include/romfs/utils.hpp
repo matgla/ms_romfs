@@ -1,12 +1,15 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
-#include <vector>
 
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
+namespace romfs
+{
+
+template <typename T>
+constexpr auto align(const T value, const uint32_t alignment)
+{
+    return value % alignment ? value + (alignment - value % alignment) : value;
+}
 
 template <typename T>
 T* make_aligned_ptr(const T* memoryAddress, std::size_t alignment)
@@ -19,6 +22,4 @@ T* make_aligned_ptr(const T* memoryAddress, std::size_t alignment)
     return (T*) addr;
 }
 
-u32 read32(u8 **fp);
-u32 readString(char **str, u8 **fp);
-std::vector<std::string> getFilesArray(std::string filePath);
+} // namespace romfs

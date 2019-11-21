@@ -3,11 +3,10 @@
 #include <cstdint>
 #include <string_view>
 
-template <typename T>
-constexpr auto align(const T value, const uint32_t alignment)
+#include "romfs/utils.hpp"
+
+namespace romfs
 {
-    return value % alignment ? value + (alignment - value % alignment) : value;
-}
 
 class Reader
 {
@@ -71,3 +70,5 @@ private:
     const uint8_t* address_;
     std::size_t readed_bytes_;
 };
+
+} // namespace romfs

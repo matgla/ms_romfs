@@ -2,7 +2,10 @@
 
 #include <cstdint>
 
-#include "fileHeader.hpp"
+#include "romfs/fileHeader.hpp"
+
+namespace romfs
+{
 
 class DirectoryIterator
 {
@@ -18,3 +21,5 @@ private:
     const uint8_t* address_;
     std::size_t offset_;
 };
+
+} // namespace romfs
