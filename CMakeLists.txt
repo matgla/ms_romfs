@@ -4,4 +4,6 @@ project(msos_romfs CXX)
 
 add_subdirectory(source)
 
-add_subdirectory(tests/examples)
+if (NOT DISABLE_ROMFS_TESTS)
+    add_subdirectory(tests/examples)
+endif()

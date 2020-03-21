@@ -50,6 +50,7 @@ std::optional<Directory> RomFsDisk::get_directory(const std::string_view& path) 
 
         std::string_view file = tmp_path.substr(0, slash_pos);
         tmp_path = tmp_path.substr(slash_pos + 1, tmp_path.size() - slash_pos);
+        printf("File %s has size %d\n", tmp_path.data(), tmp_path.size());
         auto maybe_dir = dir.get_directory(file);
         if (!maybe_dir)
         {

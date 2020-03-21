@@ -60,7 +60,7 @@ public:
         return address_ + readed_bytes_;
     }
 
-    const std::size_t get_readed_bytes() const
+    std::size_t get_readed_bytes() const
     {
         return readed_bytes_;
     }

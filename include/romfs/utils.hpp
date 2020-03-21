@@ -19,7 +19,7 @@ T* make_aligned_ptr(const T* memoryAddress, std::size_t alignment)
     {
         addr += alignment - addr % alignment;
     }
-    return (T*) addr;
+    return reinterpret_cast<T*>(addr);
 }
 
 } // namespace romfs
