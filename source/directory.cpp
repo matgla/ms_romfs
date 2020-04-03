@@ -48,13 +48,10 @@ std::optional<FileHeader> Directory::get_file(const std::string_view name) const
 {
     for (auto file : *this)
     {
-        printf("%s(%d) == %s(%d)\n", file.get_name().data(), file.get_name().size(), name.data(), name.size());
         if (file.get_name() == name)
         {
-            printf("Here it is\n");
             if (file.get_file_type() == FileType::REGULAR_FILE)
             {
-                printf("But not there\n");
                 return file;
             }
         }

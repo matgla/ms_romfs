@@ -14,6 +14,7 @@ class FileSystemHeader final
 public:
     FileSystemHeader(const uint8_t* memory);
 
+    bool init();
     uint32_t get_checksum() const;
     std::string_view get_volume_name() const;
     std::size_t get_header_size() const;

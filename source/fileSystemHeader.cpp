@@ -12,11 +12,19 @@ FileSystemHeader::FileSystemHeader(const uint8_t* memory)
     , volume_name_("")
     , reader_(make_aligned_ptr<uint8_t>(memory, 16))
 {
-    assert(validate_start_cookie());
+    // assert(validate_start_cookie());
+}
 
+bool FileSystemHeader::init()
+{
+    if (!validate_start_cookie())
+    {
+        return false;
+    }
     fs_size_ = reader_.read<uint32_t>();
     fs_checksum_ = reader_.read<uint32_t>();
     volume_name_ = reader_.read_string_with_padding(16);
+    return true;
 }
 
 bool FileSystemHeader::validate_start_cookie()

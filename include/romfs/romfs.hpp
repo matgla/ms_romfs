@@ -22,6 +22,7 @@ public:
 private:
     FileHeader get_first_file_header() const;
 
+    bool valid_;
     const uint8_t* memory_start_;
     FileSystemHeader file_system_header_;
 };

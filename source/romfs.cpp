@@ -9,6 +9,7 @@ RomFsDisk::RomFsDisk(const uint8_t* memory)
     : memory_start_(memory)
     , file_system_header_(memory)
 {
+    valid_ = file_system_header_.init();
 }
 
 FileHeader RomFsDisk::get_first_file_header() const
@@ -20,6 +21,11 @@ FileHeader RomFsDisk::get_first_file_header() const
 
 std::optional<Directory> RomFsDisk::get_directory(const std::string_view& path) const
 {
+    if (!valid_)
+    {
+        return std::optional<Directory>{};
+    }
+
     if (path.front() != '/')
     {
         return {};
@@ -50,7 +56,6 @@ std::optional<Directory> RomFsDisk::get_directory(const std::string_view& path) 
 
         std::string_view file = tmp_path.substr(0, slash_pos);
         tmp_path = tmp_path.substr(slash_pos + 1, tmp_path.size() - slash_pos);
-        printf("File %s has size %d\n", tmp_path.data(), tmp_path.size());
         auto maybe_dir = dir.get_directory(file);
         if (!maybe_dir)
         {
