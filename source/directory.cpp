@@ -44,6 +44,12 @@ std::optional<Directory> Directory::get_directory(const std::string_view name) c
     return {};
 }
 
+FileHeader Directory::get_file_header() const
+{
+    return *get_file(".");
+}
+
+
 std::optional<FileHeader> Directory::get_file(const std::string_view name) const
 {
     for (auto file : *this)
@@ -51,6 +57,10 @@ std::optional<FileHeader> Directory::get_file(const std::string_view name) const
         if (file.get_name() == name)
         {
             if (file.get_file_type() == FileType::REGULAR_FILE)
+            {
+                return file;
+            }
+            if (file.get_file_type() == FileType::DIRECTORY)
             {
                 return file;
             }

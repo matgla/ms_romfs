@@ -6,7 +6,7 @@ namespace romfs
 {
 
 template <typename T>
-constexpr auto align(const T value, const uint32_t alignment)
+constexpr auto align(const T value, std::size_t alignment)
 {
     return value % alignment ? value + (alignment - value % alignment) : value;
 }

@@ -15,18 +15,21 @@ std::string_view to_string(const FileType filetype)
         case FileType::REGULAR_FILE: return "f";
         case FileType::SOCKET: return "s";
         case FileType::SYMBOLIC_LINK: return "l";
+        case FileType::NOT_EXIST: return "ne";
     }
     return "u";
 }
 
 FileHeader::FileHeader(const uint8_t* memory)
-    : memory_start_(memory)
-    , reader_(memory)
+    : filetype_(FileType::NOT_EXIST)
+    , memory_start_(memory)
+    , data_start_(nullptr)
     , next_file_header_(0)
     , spec_info_(0)
     , file_size_(0)
-    , data_start_(nullptr)
-    , filetype_(FileType::NOT_EXIST)
+    , checksum_(0)
+    , name_{}
+    , reader_(memory)
 {
     read_next_file_offset();
     spec_info_ = reader_.read<uint32_t>();

@@ -41,17 +41,16 @@ class FileHeader final
 private:
     void read_next_file_offset();
 
+    FileType filetype_;
     const uint8_t* memory_start_;
     const uint8_t* data_start_;
-    Reader reader_;
-
     uint32_t next_file_header_;
     uint32_t spec_info_;
     uint32_t file_size_;
     uint32_t checksum_;
     std::string_view name_;
+    Reader reader_;
 
-    FileType filetype_;
 };
 
 } // namespace romfs

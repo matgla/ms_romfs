@@ -36,7 +36,7 @@ public:
     {
         T data;
         uint8_t* ptr = reinterpret_cast<uint8_t*>(&data);
-        for (int i = 0; i < sizeof(T); ++i)
+        for (std::size_t i = 0; i < sizeof(T); ++i)
         {
             ptr[sizeof(T) - i - 1] = address_[readed_bytes_ + i];
         }

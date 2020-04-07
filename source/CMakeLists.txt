@@ -32,7 +32,7 @@ message(STATUS "Adding custom cxx flags: ${romfs_cxx_compilation_flags}")
 
 target_compile_options(romfs
     PUBLIC
-        $<$<COMPILE_LANGUAGE:CXX>:-std=c++17 ${romfs_cxx_compilation_flags}>
-        $<$<CONFIG:DEBUG>:-O0 -g>
+        $<$<COMPILE_LANGUAGE:CXX>:${romfs_cxx_compilation_flags} -Werror -Wall -Wextra -Wpedantic -Wconversion -Wcast-align -Wunused -Wshadow -Wold-style-cast -Wpointer-arith -Wcast-qual -Wno-missing-braces>
+        $<$<CONFIG:DEBUG>:-Og -g>
         $<$<CONFIG:RELEASE>:-Os>
 )

@@ -31,7 +31,7 @@ std::optional<Directory> RomFsDisk::get_directory(const std::string_view& path) 
         return {};
     }
 
-    const uint32_t offset_to_first_file = file_system_header_.get_header_size();
+    const std::size_t offset_to_first_file = file_system_header_.get_header_size();
 
     Directory dir(memory_start_, offset_to_first_file);
 
