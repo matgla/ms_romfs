@@ -18,7 +18,7 @@ public:
     RomFsDisk(const uint8_t* memory);
 
     std::optional<Directory> get_directory(const std::string_view& path) const;
-
+    bool is_valid() const;
 private:
     FileHeader get_first_file_header() const;
 

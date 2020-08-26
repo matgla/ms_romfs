@@ -19,6 +19,11 @@ FileHeader RomFsDisk::get_first_file_header() const
     return f;
 }
 
+bool RomFsDisk::is_valid() const
+{
+    return valid_;
+}
+
 std::optional<Directory> RomFsDisk::get_directory(const std::string_view& path) const
 {
     if (!valid_)
