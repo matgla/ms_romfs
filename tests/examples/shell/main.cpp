@@ -128,8 +128,8 @@ int main()
                 continue;
             }
 
-            std::string_view data(reinterpret_cast<const char*>(file->data()), file->size());
-            std::cout << "size: " << file->size() << std::endl;
+            std::string_view data(reinterpret_cast<const char*>(file->data()), file->get_size());
+            std::cout << "size: " << file->get_size() << std::endl;
 
             for (const char c : data)
             {

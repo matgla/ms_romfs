@@ -31,6 +31,8 @@ target_include_directories(romfs
 message(STATUS "Adding custom cxx flags: ${romfs_cxx_compilation_flags}")
 
 target_compile_options(romfs
+    PUBLIC
+        $<$<COMPILE_LANGUAGE:CXX>:-std=c++20>
     PRIVATE
         $<$<COMPILE_LANGUAGE:CXX>:${romfs_cxx_compilation_flags} -Werror -Wall -Wextra -Wpedantic -Wconversion -Wcast-align -Wunused -Wshadow -Wold-style-cast -Wpointer-arith -Wcast-qual -Wno-missing-braces>
         $<$<CONFIG:DEBUG>:-Og -g>

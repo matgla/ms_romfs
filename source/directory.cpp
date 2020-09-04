@@ -44,9 +44,21 @@ std::optional<Directory> Directory::get_directory(const std::string_view name) c
     return {};
 }
 
-FileHeader Directory::get_file_header() const
+std::optional<FileHeader> Directory::get_file_header() const
 {
-    return *get_file(".");
+    auto file = get_file(".");
+
+    if (!file)
+    {
+        return {};
+    }
+
+    if (file->get_file_type() == FileType::HARD_LINK)
+    {
+        return FileHeader(address_ + file->get_specinfo());
+    }
+
+    return file;
 }
 
 
@@ -61,6 +73,10 @@ std::optional<FileHeader> Directory::get_file(const std::string_view name) const
                 return file;
             }
             if (file.get_file_type() == FileType::DIRECTORY)
+            {
+                return file;
+            }
+            if (file.get_file_type() == FileType::HARD_LINK)
             {
                 return file;
             }

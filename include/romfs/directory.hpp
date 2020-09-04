@@ -23,7 +23,7 @@ public:
     DirectoryIterator end() const;
 
     std::optional<FileHeader> get_file(const std::string_view name) const;
-    FileHeader get_file_header() const;
+    std::optional<FileHeader> get_file_header() const;
 private:
     const uint8_t* address_;
     std::size_t offset_;

@@ -53,4 +53,5 @@ std::size_t FileSystemHeader::get_header_size() const
     return reader_.get_readed_bytes();
 }
 
+
 } // namespace romfs
